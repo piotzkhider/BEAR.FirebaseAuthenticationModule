@@ -15,7 +15,7 @@ class FirebaseAuthenticationModuleTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->firebaseAuthenticationModule = new FirebaseAuthenticationModule();
+        $this->firebaseAuthenticationModule = new FirebaseAuthenticationModule(__DIR__ . '/dummy.json');
     }
 
     public function testIsInstanceOfFirebaseAuthenticationModule(): void

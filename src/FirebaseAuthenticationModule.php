@@ -35,6 +35,7 @@ class FirebaseAuthenticationModule extends AbstractModule
         $this->install(new AssistedModule());
         $this->install(new AuraWebModule());
         $this->install(new FirebaseModule($this->credentials));
+
         $this->bind()->annotatedWith(Extractors::class)->toInstance([
             new AuthorizationHeaderIDTokenExtractor(),
         ]);

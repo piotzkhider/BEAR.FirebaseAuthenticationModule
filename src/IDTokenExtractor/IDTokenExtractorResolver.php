@@ -17,15 +17,11 @@ class IDTokenExtractorResolver
 
     /**
      * @Extractors()
+     *
+     * @param IDTokenExtractorInterface[] $extractors
      */
     public function __construct(array $extractors)
     {
-        foreach ($extractors as $extractor) {
-            if (! $extractor instanceof IDTokenExtractorInterface) {
-                throw new \InvalidArgumentException('Extractor must implement IDTokenExtractorInterface');
-            }
-        }
-
         $this->extractors = $extractors;
     }
 

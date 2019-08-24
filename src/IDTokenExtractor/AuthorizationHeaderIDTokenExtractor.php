@@ -9,11 +9,6 @@ use Koriym\HttpConstants\RequestHeader;
 
 class AuthorizationHeaderIDTokenExtractor implements IDTokenExtractorInterface
 {
-    /**
-     * @var string
-     */
-    private $prefix = 'Bearer';
-
     public function supports(Request $request): bool
     {
         if (null === $header = $request->headers->get(RequestHeader::AUTHORIZATION)) {
@@ -22,11 +17,11 @@ class AuthorizationHeaderIDTokenExtractor implements IDTokenExtractorInterface
 
         $parts = explode(' ', $header);
 
-        return count($parts) === 2 && strcasecmp($parts[0], $this->prefix) === 0;
+        return count($parts) === 2 && strcasecmp($parts[0], 'Bearer') === 0;
     }
 
     public function extract(Request $request): string
     {
-        return str_ireplace("{$this->prefix} ", '', $request->headers->get(RequestHeader::AUTHORIZATION));
+        return str_ireplace('Bearer ', '', $request->headers->get(RequestHeader::AUTHORIZATION));
     }
 }

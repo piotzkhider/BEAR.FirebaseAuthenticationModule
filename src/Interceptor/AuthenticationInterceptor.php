@@ -60,7 +60,6 @@ class AuthenticationInterceptor implements MethodInterceptor
     }
 
     /**
-     * @return UserRecord
      * @throws AuthenticationException
      */
     private function authenticate(): UserRecord
@@ -74,6 +73,7 @@ class AuthenticationInterceptor implements MethodInterceptor
     {
         $method = $invocation->getMethod();
         $this->invocationProvider->set($invocation);
+        /** @var Authenticate $auth */
         $auth = $method->getAnnotation(Authenticate::class);
         if ($auth->user === null) {
             return;
@@ -85,8 +85,10 @@ class AuthenticationInterceptor implements MethodInterceptor
             if ($parameter->getName() !== $auth->user) {
                 continue;
             }
-            $hint = $parameter->getClass()->getName();
-            if ($hint !== UserRecord::class) {
+            /** @var \ReflectionClass $hint */
+            $hint = $parameter->getClass();
+            $name = $hint->getName();
+            if ($name !== UserRecord::class) {
                 throw new LogicException('User must be UserRecord.');
             }
             $pos = $parameter->getPosition();

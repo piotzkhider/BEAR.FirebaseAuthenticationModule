@@ -27,6 +27,6 @@ class AuthorizationHeaderIDTokenExtractor implements IDTokenExtractorInterface
 
     public function extract(Request $request): string
     {
-        return str_ireplace("$this->prefix ", '', $request->headers->get(RequestHeader::AUTHORIZATION));
+        return str_ireplace("{$this->prefix} ", '', $request->headers->get(RequestHeader::AUTHORIZATION));
     }
 }

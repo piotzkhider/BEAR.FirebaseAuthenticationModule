@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Piotzkhider\FirebaseAuthenticationModule;
 
-use Piotzkhider\FirebaseAuthenticationModule\Annotation\Auth;
+use Piotzkhider\FirebaseAuthenticationModule\Annotation\Authenticate;
 use Piotzkhider\FirebaseAuthenticationModule\Annotation\Extractors;
 use Piotzkhider\FirebaseAuthenticationModule\Guard\Authenticator;
 use Piotzkhider\FirebaseAuthenticationModule\Guard\AuthenticatorInterface;
@@ -42,7 +42,7 @@ class FirebaseAuthenticationModule extends AbstractModule
         $this->bind(AuthenticatorInterface::class)->to(Authenticator::class)->in(Scope::SINGLETON);
         $this->bindInterceptor(
             $this->matcher->any(),
-            $this->matcher->annotatedWith(Auth::class),
+            $this->matcher->annotatedWith(Authenticate::class),
             [AuthenticationInterceptor::class]
         );
     }

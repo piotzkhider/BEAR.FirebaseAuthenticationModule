@@ -39,29 +39,29 @@ class AppModule extends AbstractAppModule
 }
 ```
 
-## @Auth
+## @Authenticate
 
-`@Auth`は認証のためのアノテーションです。  
+`@Authenticate`は認証のためのアノテーションです。  
 メソッドの実行前に認証処理が実行され、認証に失敗すると[RFC6750](https://tools.ietf.org/html/rfc6750)に準拠した（つもりの）レスポンスを返却します。
 
 ```php
 class Tasks extends ResourceObject
 {
     /**
-     * @Auth
+     * @Authenticate
      */
     public function onGet(): ResourceObject
     {
 ```
 
 認証されたユーザをメソッドの引数に注入することができます。  
-そのためには依存を受け取る引数を`@Auth`アノテーションのプロパティに指定し、[`@Assisted`](https://github.com/ray-di/Ray.Di#assisted-injection)による注入と同様に引数リストの終わりに移動して`null`をデフォルトとして与える必要があります。
+そのためには依存を受け取る引数を`@Authenticate`アノテーションのプロパティに指定し、[`@Assisted`](https://github.com/ray-di/Ray.Di#assisted-injection)による注入と同様に引数リストの終わりに移動して`null`をデフォルトとして与える必要があります。
 
 ```php
 class Tasks extends ResourceObject
 {
     /**
-     * @Auth(user="user")
+     * @Authenticate(user="user")
      */
     public function onGet(UserRecord $user = null): ResourceObject
     {

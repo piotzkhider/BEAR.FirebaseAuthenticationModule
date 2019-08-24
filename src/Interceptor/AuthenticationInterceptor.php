@@ -7,7 +7,7 @@ namespace Piotzkhider\FirebaseAuthenticationModule\Interceptor;
 use Aura\Web\Request;
 use BEAR\Resource\ResourceObject;
 use Kreait\Firebase\Auth\UserRecord;
-use Piotzkhider\FirebaseAuthenticationModule\Annotation\Auth;
+use Piotzkhider\FirebaseAuthenticationModule\Annotation\Authenticate;
 use Piotzkhider\FirebaseAuthenticationModule\Exception\AuthenticationException;
 use Piotzkhider\FirebaseAuthenticationModule\Exception\LogicException;
 use Piotzkhider\FirebaseAuthenticationModule\Guard\AuthenticatorInterface;
@@ -74,7 +74,7 @@ class AuthenticationInterceptor implements MethodInterceptor
     {
         $method = $invocation->getMethod();
         $this->invocationProvider->set($invocation);
-        $auth = $method->getAnnotation(Auth::class);
+        $auth = $method->getAnnotation(Authenticate::class);
         if ($auth->user === null) {
             return;
         }

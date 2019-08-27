@@ -36,7 +36,7 @@ class AuthenticatorTest extends TestCase
      */
     private $auth;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->firebase = $this->createMock(Firebase::class);
         $this->auth = $this->createMock(Firebase\Auth::class);
@@ -71,11 +71,10 @@ class AuthenticatorTest extends TestCase
         $this->assertSame($token, $result);
     }
 
-    /**
-     * @expectedException \Piotzkhider\FirebaseAuthenticationModule\Exception\InvalidToken
-     */
     public function testGetCredentialsWithInvalidToken(): void
     {
+        $this->expectException(\Piotzkhider\FirebaseAuthenticationModule\Exception\InvalidToken::class);
+
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer example_token';
 
         $this->firebase->expects($this->once())

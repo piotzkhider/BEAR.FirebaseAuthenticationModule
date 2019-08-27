@@ -6,6 +6,7 @@ namespace Piotzkhider\FirebaseAuthenticationModule\IDTokenExtractor;
 
 use Aura\Web\Request;
 use PHPUnit\Framework\TestCase;
+use Piotzkhider\FirebaseAuthenticationModule\Exception\IDTokenNotFound;
 use Piotzkhider\FirebaseAuthenticationModule\FirebaseAuthenticationModule;
 use Ray\Di\Injector;
 
@@ -27,11 +28,10 @@ class IDTokenExtractorResolverTest extends TestCase
         $this->assertInstanceOf(AuthorizationHeaderIDTokenExtractor::class, $result);
     }
 
-    /**
-     * @expectedException \Piotzkhider\FirebaseAuthenticationModule\Exception\IDTokenNotFound
-     */
     public function testResolveWithoutExtractor(): void
     {
+        $this->expectException(IDTokenNotFound::class);
+
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer example_token';
         $request = (new Injector(new FirebaseAuthenticationModule(dirname(__DIR__) . '/dummy.json'), dirname(__DIR__) . '/tmp'))->getInstance(Request::class);
         $SUT = new IDTokenExtractorResolver([]);

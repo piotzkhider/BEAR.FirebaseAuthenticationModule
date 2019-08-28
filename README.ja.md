@@ -6,9 +6,11 @@ BEAR.FirebaseAuthenticationModule
 [![Build Status](https://scrutinizer-ci.com/g/piotzkhider/BEAR.FirebaseAuthenticationModule/badges/build.png?b=master)](https://scrutinizer-ci.com/g/piotzkhider/BEAR.FirebaseAuthenticationModule/build-status/master)
 [![Build Status](https://travis-ci.org/piotzkhider/BEAR.FirebaseAuthenticationModule.svg?branch=master)](https://travis-ci.org/piotzkhider/BEAR.FirebaseAuthenticationModule)
 
+[English](README.md)
+
 [Firebase](https://github.com/kreait/firebase-php) Authentication Module for [BEAR.Sunday](https://github.com/bearsunday/BEAR.Sunday)
 
-## Installation
+## インストール
 
 ### Composer install
 

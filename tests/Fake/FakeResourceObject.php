@@ -6,6 +6,6 @@ namespace Piotzkhider\FirebaseAuthenticationModule;
 
 use BEAR\Resource\ResourceObject;
 
-class FakeResource extends ResourceObject
+class FakeResourceObject extends ResourceObject
 {
 }

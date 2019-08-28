@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Piotzkhider\FirebaseAuthenticationModule\IDTokenExtractor;
+namespace Piotzkhider\FirebaseAuthenticationModule\Extractor;
 
 use Aura\Web\Request;
 use Koriym\HttpConstants\RequestHeader;
 
-class AuthorizationHeaderIDTokenExtractor implements IDTokenExtractorInterface
+class AuthorizationHeaderTokenExtractor implements TokenExtractorInterface
 {
     public function supports(Request $request): bool
     {

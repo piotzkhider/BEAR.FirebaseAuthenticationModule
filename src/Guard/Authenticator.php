@@ -8,29 +8,29 @@ use Aura\Web\Request;
 use BEAR\Resource\ResourceObject;
 use Koriym\HttpConstants\ResponseHeader;
 use Koriym\HttpConstants\StatusCode;
-use Kreait\Firebase;
 use Kreait\Firebase\Auth\UserRecord;
 use Lcobucci\JWT\Token;
+use Piotzkhider\FirebaseAuthenticationModule\AuthInterface;
 use Piotzkhider\FirebaseAuthenticationModule\Exception\AuthenticationException;
-use Piotzkhider\FirebaseAuthenticationModule\Exception\IDTokenNotFound;
 use Piotzkhider\FirebaseAuthenticationModule\Exception\InvalidToken;
-use Piotzkhider\FirebaseAuthenticationModule\IDTokenExtractor\IDTokenExtractorResolver;
+use Piotzkhider\FirebaseAuthenticationModule\Exception\TokenNotFound;
+use Piotzkhider\FirebaseAuthenticationModule\Extractor\TokenExtractorResolver;
 
 class Authenticator implements AuthenticatorInterface
 {
     /**
-     * @var Firebase
+     * @var AuthInterface
      */
-    protected $firebase;
+    private $auth;
 
     /**
-     * @var IDTokenExtractorResolver
+     * @var TokenExtractorResolver
      */
     private $resolver;
 
-    public function __construct(Firebase $firebase, IDTokenExtractorResolver $resolver)
+    public function __construct(AuthInterface $auth, TokenExtractorResolver $resolver)
     {
-        $this->firebase = $firebase;
+        $this->auth = $auth;
         $this->resolver = $resolver;
     }
 
@@ -39,40 +39,36 @@ class Authenticator implements AuthenticatorInterface
         $extractor = $this->resolver->resolve($request);
         $idToken = $extractor->extract($request);
 
-        try {
-            return $this->firebase->getAuth()->verifyIdToken($idToken);
-        } catch (\Firebase\Auth\Token\Exception\InvalidToken $e) {
-            throw new InvalidToken($e->getMessage());
-        }
+        return $this->auth->verifyIdToken($idToken);
     }
 
     public function getUser(Token $token): UserRecord
     {
         $uidClaim = $token->getClaim('sub');
 
-        return $this->firebase->getAuth()->getUser($uidClaim);
+        return $this->auth->getUser($uidClaim);
     }
 
-    public function onAuthenticationFailure(ResourceObject $caller, AuthenticationException $e): ResourceObject
+    public function onAuthenticationFailure(ResourceObject $ro, AuthenticationException $e): ResourceObject
     {
-        if ($e instanceof IDTokenNotFound) {
-            $caller->code = StatusCode::UNAUTHORIZED;
-            $caller->headers[ResponseHeader::WWW_AUTHENTICATE] = sprintf(
+        if ($e instanceof TokenNotFound) {
+            $ro->code = StatusCode::UNAUTHORIZED;
+            $ro->headers[ResponseHeader::WWW_AUTHENTICATE] = sprintf(
                 'Bearer realm="token_required",error="token_not_found",error_description="%s"',
                 $e->getMessage()
             );
 
-            return $caller;
+            return $ro;
         }
 
         if ($e instanceof InvalidToken) {
-            $caller->code = StatusCode::UNAUTHORIZED;
-            $caller->headers[ResponseHeader::WWW_AUTHENTICATE] = sprintf(
+            $ro->code = StatusCode::UNAUTHORIZED;
+            $ro->headers[ResponseHeader::WWW_AUTHENTICATE] = sprintf(
                 'Bearer realm="token_required",error="invalid_token",error_description="%s"',
                 $e->getMessage()
             );
 
-            return $caller;
+            return $ro;
         }
 
         throw $e;

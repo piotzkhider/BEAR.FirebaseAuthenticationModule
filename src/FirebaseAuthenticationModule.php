@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Piotzkhider\FirebaseAuthenticationModule;
 
+use BEAR\Resource\ResourceObject;
+use Kreait\Firebase\Auth as FirebaseAuth;
 use Piotzkhider\FirebaseAuthenticationModule\Annotation\Authenticate;
 use Piotzkhider\FirebaseAuthenticationModule\Annotation\Extractors;
+use Piotzkhider\FirebaseAuthenticationModule\Extractor\AuthorizationHeaderTokenExtractor;
+use Piotzkhider\FirebaseAuthenticationModule\Extractor\TokenExtractorResolver;
+use Piotzkhider\FirebaseAuthenticationModule\Firebase\FirebaseAuthProvider;
 use Piotzkhider\FirebaseAuthenticationModule\Guard\Authenticator;
 use Piotzkhider\FirebaseAuthenticationModule\Guard\AuthenticatorInterface;
-use Piotzkhider\FirebaseAuthenticationModule\IDTokenExtractor\AuthorizationHeaderIDTokenExtractor;
-use Piotzkhider\FirebaseAuthenticationModule\IDTokenExtractor\IDTokenExtractorResolver;
 use Piotzkhider\FirebaseAuthenticationModule\Interceptor\AuthenticationInterceptor;
 use Piotzkhider\FirebaseModule\FirebaseModule;
 use Ray\AuraWebModule\AuraWebModule;
@@ -36,13 +39,15 @@ class FirebaseAuthenticationModule extends AbstractModule
         $this->install(new AuraWebModule());
         $this->install(new FirebaseModule($this->credentials));
 
+        $this->bind(FirebaseAuth::class)->toProvider(FirebaseAuthProvider::class)->in(Scope::SINGLETON);
+        $this->bind(AuthInterface::class)->to(Auth::class)->in(Scope::SINGLETON);
         $this->bind()->annotatedWith(Extractors::class)->toInstance([
-            new AuthorizationHeaderIDTokenExtractor(),
+            new AuthorizationHeaderTokenExtractor(),
         ]);
-        $this->bind(IDTokenExtractorResolver::class)->in(Scope::SINGLETON);
+        $this->bind(TokenExtractorResolver::class)->in(Scope::SINGLETON);
         $this->bind(AuthenticatorInterface::class)->to(Authenticator::class)->in(Scope::SINGLETON);
         $this->bindInterceptor(
-            $this->matcher->any(),
+            $this->matcher->subclassesOf(ResourceObject::class),
             $this->matcher->annotatedWith(Authenticate::class),
             [AuthenticationInterceptor::class]
         );

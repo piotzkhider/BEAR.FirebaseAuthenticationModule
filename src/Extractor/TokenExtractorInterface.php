@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Piotzkhider\FirebaseAuthenticationModule\IDTokenExtractor;
+namespace Piotzkhider\FirebaseAuthenticationModule\Extractor;
 
 use Aura\Web\Request;
 
-interface IDTokenExtractorInterface
+interface TokenExtractorInterface
 {
     public function supports(Request $request): bool;
 

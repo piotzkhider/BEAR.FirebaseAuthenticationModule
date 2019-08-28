@@ -22,5 +22,5 @@ interface AuthenticatorInterface
     /**
      * @throws AuthenticationException
      */
-    public function onAuthenticationFailure(ResourceObject $caller, AuthenticationException $e): ResourceObject;
+    public function onAuthenticationFailure(ResourceObject $ro, AuthenticationException $e): ResourceObject;
 }

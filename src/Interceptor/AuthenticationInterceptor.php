@@ -42,20 +42,24 @@ class AuthenticationInterceptor implements MethodInterceptor
         $this->invocationProvider = $invocationProvider;
     }
 
-    public function invoke(MethodInvocation $invocation): ResourceObject
+    public function invoke(MethodInvocation $invocation)
     {
-        $caller = $invocation->getThis();
-        if (! ($caller instanceof ResourceObject)) {
-            throw new LogicException('Caller must be ResourceObject.');
-        }
+        $ro = $invocation->getThis();
+        assert($ro instanceof ResourceObject);
+
+        $annotation = $invocation->getMethod()->getAnnotation(Authenticate::class);
+        assert($annotation instanceof Authenticate);
 
         try {
             $user = $this->authenticate();
-            $this->injectAuthenticatedUser($invocation, $user);
+            if ($annotation->user !== null) {
+                $this->invocationProvider->set($invocation);
+                $this->injectUser($invocation, $user);
+            }
 
             return $invocation->proceed();
         } catch (AuthenticationException $e) {
-            return $this->guard->onAuthenticationFailure($caller, $e);
+            return $this->guard->onAuthenticationFailure($ro, $e);
         }
     }
 
@@ -64,31 +68,26 @@ class AuthenticationInterceptor implements MethodInterceptor
      */
     private function authenticate(): UserRecord
     {
-        $verifiedToken = $this->guard->getCredentials($this->request);
+        $token = $this->guard->getCredentials($this->request);
 
-        return $this->guard->getUser($verifiedToken);
+        return $this->guard->getUser($token);
     }
 
-    private function injectAuthenticatedUser(MethodInvocation $invocation, UserRecord $user): void
+    private function injectUser(MethodInvocation $invocation, UserRecord $user): void
     {
         $method = $invocation->getMethod();
-        $this->invocationProvider->set($invocation);
-        /** @var Authenticate $auth */
-        $auth = $method->getAnnotation(Authenticate::class);
-        if ($auth->user === null) {
-            return;
-        }
+        $annotation = $method->getAnnotation(Authenticate::class);
+        assert($annotation instanceof Authenticate);
         $parameters = $method->getParameters();
         $arguments = $invocation->getArguments()->getArrayCopy();
 
         foreach ($parameters as $parameter) {
-            if ($parameter->getName() !== $auth->user) {
+            if ($parameter->getName() !== $annotation->user) {
                 continue;
             }
             /** @var \ReflectionClass $hint */
             $hint = $parameter->getClass();
-            $name = $hint->getName();
-            if ($name !== UserRecord::class) {
+            if ($hint->getName() !== UserRecord::class) {
                 throw new LogicException('User must be UserRecord.');
             }
             $pos = $parameter->getPosition();

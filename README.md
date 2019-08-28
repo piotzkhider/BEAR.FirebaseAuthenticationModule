@@ -41,8 +41,8 @@ class AppModule extends AbstractAppModule
 
 ## @Authenticate
 
-`@Authenticate`は認証のためのアノテーションです。  
-メソッドの実行前に認証処理が実行され、認証に失敗すると[RFC6750](https://tools.ietf.org/html/rfc6750)に準拠した（つもりの）レスポンスを返却します。
+`@Authenticate`は認証のためのアノテーションです。
+メソッドの実行前に認証処理が実行されます。
 
 ```php
 class Tasks extends ResourceObject

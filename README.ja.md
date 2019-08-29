@@ -6,11 +6,11 @@ BEAR.FirebaseAuthenticationModule
 [![Build Status](https://scrutinizer-ci.com/g/piotzkhider/BEAR.FirebaseAuthenticationModule/badges/build.png?b=master)](https://scrutinizer-ci.com/g/piotzkhider/BEAR.FirebaseAuthenticationModule/build-status/master)
 [![Build Status](https://travis-ci.org/piotzkhider/BEAR.FirebaseAuthenticationModule.svg?branch=master)](https://travis-ci.org/piotzkhider/BEAR.FirebaseAuthenticationModule)
 
-[Japanese](README.ja.md)
+[English](README.md)
 
 [Firebase](https://github.com/kreait/firebase-php) Authentication Module for [BEAR.Sunday](https://github.com/bearsunday/BEAR.Sunday)
 
-## Installation
+## インストール
 
 ### Composer install
 
@@ -43,8 +43,8 @@ class AppModule extends AbstractAppModule
 
 ## @Authenticate
 
-`@Authenticate` is a annotation for authentication.  
-Authentication process is executed before process the method.
+`@Authenticate`は認証のためのアノテーションです。
+メソッドの実行前に認証処理が実行されます。
 
 ```php
 class Tasks extends ResourceObject
@@ -55,9 +55,9 @@ class Tasks extends ResourceObject
     public function onGet(): ResourceObject
     {
 ```
-The authenticated user can be defined directly as a method argument.  
-For that purpose it need specified in `@Authenticate` attribute.
-And it set `null` of default parameter in last of arguments like [`@Assisted`](https://github.com/ray-di/Ray.Di#assisted-injection).
+
+認証されたユーザをメソッドの引数に注入することができます。  
+そのためには依存を受け取る引数を`@Authenticate`アノテーションのプロパティに指定し、[`@Assisted`](https://github.com/ray-di/Ray.Di#assisted-injection)による注入と同様に引数リストの終わりに移動して`null`をデフォルトとして与える必要があります。
 
 ```php
 class Tasks extends ResourceObject
@@ -68,3 +68,4 @@ class Tasks extends ResourceObject
     public function onGet(UserRecord $user = null): ResourceObject
     {
 ```
+
